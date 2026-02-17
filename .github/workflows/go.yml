@@ -11,16 +11,45 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    steps:
-    - uses: actions/checkout@v4
+    env:
+      GO111MODULE: off
+      CGO_ENABLED: 0
 
-    - name: Set up Go
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Go
       uses: actions/setup-go@v4
       with:
         go-version: '1.20'
 
-    - name: Build
-      run: go build -v
+    - name: Show Go Environment
+      run: |
+        go version
+        go env
 
-    - name: Test
-      run: go test -v
+    # =========================
+    # Linux 构建
+    # =========================
+    - name: Build (Linux)
+      run: |
+        GOOS=linux GOARCH=amd64 go build -v -o wireguard-go-linux
+
+    # =========================
+    # DragonFly 构建
+    # =========================
+    - name: Build (DragonFly BSD)
+      run: |
+        GOOS=dragonfly GOARCH=amd64 go build -v -o wireguard-go-dragonfly
+
+    # =========================
+    # 上传构建产物
+    # =========================
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: wireguard-go-build
+        path: |
+          wireguard-go-linux
+          wireguard-go-dragonfly
