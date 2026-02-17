@@ -20,12 +20,19 @@ jobs:
       with:
         go-version: '1.22'
 
+    - name: Show structure (debug)
+      run: |
+        ls -R
+        find . -name go.mod
+
     - name: Build (Linux)
       run: |
+        cd cmd/wireguard-go
         go build -v -o wireguard-go-linux
 
     - name: Build (DragonFly)
       run: |
+        cd cmd/wireguard-go
         GOOS=dragonfly GOARCH=amd64 go build -v -o wireguard-go-dragonfly
 
     - name: Upload artifacts
@@ -33,5 +40,5 @@ jobs:
       with:
         name: wireguard-go-build
         path: |
-          wireguard-go-linux
-          wireguard-go-dragonfly
+          cmd/wireguard-go/wireguard-go-linux
+          cmd/wireguard-go/wireguard-go-dragonfly
