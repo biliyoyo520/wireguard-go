@@ -11,11 +11,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    env:
-      GO111MODULE: off
-      CGO_ENABLED: 0
-      GOPATH: /home/runner/go
-
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -23,26 +18,14 @@ jobs:
     - name: Setup Go
       uses: actions/setup-go@v4
       with:
-        go-version: '1.20'
-
-    - name: Prepare GOPATH structure
-      run: |
-        mkdir -p $GOPATH/src/git.zx2c4.com
-        cp -r $GITHUB_WORKSPACE $GOPATH/src/git.zx2c4.com/wireguard-go
-
-    - name: Download dependencies
-      run: |
-        cd $GOPATH/src/git.zx2c4.com/wireguard-go
-        go get -v ./...
+        go-version: '1.22'
 
     - name: Build (Linux)
       run: |
-        cd $GOPATH/src/git.zx2c4.com/wireguard-go
-        GOOS=linux GOARCH=amd64 go build -v -o wireguard-go-linux
+        go build -v -o wireguard-go-linux
 
     - name: Build (DragonFly)
       run: |
-        cd $GOPATH/src/git.zx2c4.com/wireguard-go
         GOOS=dragonfly GOARCH=amd64 go build -v -o wireguard-go-dragonfly
 
     - name: Upload artifacts
@@ -50,5 +33,5 @@ jobs:
       with:
         name: wireguard-go-build
         path: |
-          /home/runner/go/src/git.zx2c4.com/wireguard-go/wireguard-go-linux
-          /home/runner/go/src/git.zx2c4.com/wireguard-go/wireguard-go-dragonfly
+          wireguard-go-linux
+          wireguard-go-dragonfly
