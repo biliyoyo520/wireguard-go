@@ -30,6 +30,11 @@ jobs:
         mkdir -p $GOPATH/src/git.zx2c4.com
         cp -r $GITHUB_WORKSPACE $GOPATH/src/git.zx2c4.com/wireguard-go
 
+    - name: Download dependencies
+      run: |
+        cd $GOPATH/src/git.zx2c4.com/wireguard-go
+        go get -v ./...
+
     - name: Build (Linux)
       run: |
         cd $GOPATH/src/git.zx2c4.com/wireguard-go
