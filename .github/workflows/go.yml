@@ -14,7 +14,7 @@ jobs:
     env:
       GO111MODULE: off
       CGO_ENABLED: 0
-      GOPATH: ${{ github.workspace }}/gopath
+      GOPATH: /home/runner/go
 
     steps:
     - name: Checkout
@@ -28,7 +28,7 @@ jobs:
     - name: Prepare GOPATH structure
       run: |
         mkdir -p $GOPATH/src/git.zx2c4.com
-        mv $GITHUB_WORKSPACE $GOPATH/src/git.zx2c4.com/wireguard-go
+        cp -r $GITHUB_WORKSPACE $GOPATH/src/git.zx2c4.com/wireguard-go
 
     - name: Build (Linux)
       run: |
@@ -45,5 +45,5 @@ jobs:
       with:
         name: wireguard-go-build
         path: |
-          gopath/src/git.zx2c4.com/wireguard-go/wireguard-go-linux
-          gopath/src/git.zx2c4.com/wireguard-go/wireguard-go-dragonfly
+          /home/runner/go/src/git.zx2c4.com/wireguard-go/wireguard-go-linux
+          /home/runner/go/src/git.zx2c4.com/wireguard-go/wireguard-go-dragonfly
