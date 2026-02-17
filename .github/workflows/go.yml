@@ -14,6 +14,7 @@ jobs:
     env:
       GO111MODULE: off
       CGO_ENABLED: 0
+      GOPATH: ${{ github.workspace }}/gopath
 
     steps:
     - name: Checkout
@@ -24,32 +25,25 @@ jobs:
       with:
         go-version: '1.20'
 
-    - name: Show Go Environment
+    - name: Prepare GOPATH structure
       run: |
-        go version
-        go env
+        mkdir -p $GOPATH/src/git.zx2c4.com
+        mv $GITHUB_WORKSPACE $GOPATH/src/git.zx2c4.com/wireguard-go
 
-    # =========================
-    # Linux 构建
-    # =========================
     - name: Build (Linux)
       run: |
+        cd $GOPATH/src/git.zx2c4.com/wireguard-go
         GOOS=linux GOARCH=amd64 go build -v -o wireguard-go-linux
 
-    # =========================
-    # DragonFly 构建
-    # =========================
-    - name: Build (DragonFly BSD)
+    - name: Build (DragonFly)
       run: |
+        cd $GOPATH/src/git.zx2c4.com/wireguard-go
         GOOS=dragonfly GOARCH=amd64 go build -v -o wireguard-go-dragonfly
 
-    # =========================
-    # 上传构建产物
-    # =========================
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
         name: wireguard-go-build
         path: |
-          wireguard-go-linux
-          wireguard-go-dragonfly
+          gopath/src/git.zx2c4.com/wireguard-go/wireguard-go-linux
+          gopath/src/git.zx2c4.com/wireguard-go/wireguard-go-dragonfly
